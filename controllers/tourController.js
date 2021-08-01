@@ -4,6 +4,7 @@ const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
 );
 
+// PARAM MIDDLEWARE
 exports.checkID = (req, res, next, val) => {
   console.log(`Tour id is: ${val}`);
 
@@ -26,6 +27,7 @@ exports.checkBody = (req, res, next) => {
   next();
 };
 
+// HTTP FUNCTIONS
 exports.getAllTours = (req, res) => {
   console.log(req.requestTime);
 
