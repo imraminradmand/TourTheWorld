@@ -5,8 +5,10 @@ const userRouter = require('./routes/userRoutes')
 const app = express()
 
 // MIDDLEWARE
+if(process.env.NODE_ENV === 'dev') {
+    app.use(morgan('dev'))
+}
 app.use(express.json())
-app.use(morgan('dev'))
 
 // ROUTES
 app.use('/api/v1/tours', tourRouter)
