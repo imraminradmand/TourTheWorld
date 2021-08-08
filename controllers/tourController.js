@@ -11,9 +11,14 @@ exports.getAllTours = async (req, res) => {
 
     let queryString = JSON.stringify(queryObject)
     queryString = queryString.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`)
-    console.log(JSON.parse(queryString))
+    //console.log(JSON.parse(queryString))
 
-    const query = Tour.find(JSON.parse(queryString))
+    let query = Tour.find(JSON.parse(queryString))
+
+    //Adding sorting feature to API
+    if(req.query.sort) {
+      query = query.sort(req.query.sort)
+    } 
 
     //Execute the query built above here
     const allTours = await query
