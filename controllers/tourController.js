@@ -1,4 +1,5 @@
 const Tour = require('../models/tourModel')
+const APIFeatures = require('../utilities/apiFeatures')
 
 //Aliasing
 exports.aliasTopTours = (req, res, next) => {
@@ -12,48 +13,14 @@ exports.aliasTopTours = (req, res, next) => {
 exports.getAllTours = async (req, res) => {
 
   try {
-    //Build the query here
-    const queryObject = {...req.query}
-    const excludeFields = ['page', 'sort', 'limit', 'fields']
-    excludeFields.forEach(el => delete queryObject[el])
-
-    let queryString = JSON.stringify(queryObject)
-    queryString = queryString.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`)
-    //console.log(JSON.parse(queryString))
-
-    let query = Tour.find(JSON.parse(queryString))
-
-    //Adding sorting feature to API
-    if(req.query.sort) {
-      const sortBy = req.query.sort.split(',').join(' ')
-      //console.log(sortBy)
-      query = query.sort(sortBy)
-    }  else {
-      query = query.sort('ratingsAverage')
-    }
-
-    //Field limiting
-    if(req.query.fields) {
-      const fields = req.query.fields.split(',').join(' ')
-      query = query.select(fields)
-    } else {
-      query = query.select('-__v')
-    }
-
-    //Pagination
-    const page = req.query.page * 1 || 1
-    const limit = req.query.limit * 1 || 10
-    const skipValue = (page - 1) * limit
-
-    query = query.skip(skipValue).limit(limit)
-
-    if(req.query.page) {
-      const totalTours = await Tour.countDocuments()
-      if(skip >= totalTours) throw new Error ('Page does not exist')
-    }
-
     //Execute the query built above here
-    const allTours = await query
+    const features = new APIFeatures(Tour.find(), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate()
+
+    const allTours = await features.query
 
     res.status(200).json({
       status: 'success',
@@ -68,7 +35,7 @@ exports.getAllTours = async (req, res) => {
       message: err
     })
   }
-};
+}
 
 exports.getSingleTour = async (req, res) => {
   
@@ -86,7 +53,7 @@ exports.getSingleTour = async (req, res) => {
       message: err
     })
   }
-};
+}
 
 exports.createTour = async (req, res) => {
 
@@ -106,7 +73,7 @@ exports.createTour = async (req, res) => {
     })
   }
   
-};
+}
 
 exports.updateTour = async (req, res) => {
   try {
@@ -126,7 +93,7 @@ exports.updateTour = async (req, res) => {
       message: err
     })
   }
-};
+}
 
 exports.deleteTour = async (req, res) => {
   try {
@@ -141,4 +108,4 @@ exports.deleteTour = async (req, res) => {
       message: err
     })
   }
-};
+}
