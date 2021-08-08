@@ -17,8 +17,12 @@ exports.getAllTours = async (req, res) => {
 
     //Adding sorting feature to API
     if(req.query.sort) {
-      query = query.sort(req.query.sort)
-    } 
+      const sortBy = req.query.sort.split(',').join(' ')
+      //console.log(sortBy)
+      query = query.sort(sortBy)
+    }  else {
+      query = query.sort('-createdAt')
+    }
 
     //Execute the query built above here
     const allTours = await query
