@@ -4,12 +4,13 @@ const Tour = require('../models/tourModel')
 exports.getAllTours = async (req, res) => {
 
   try {
+
     const allTours = await Tour.find()
     res.status(200).json({
       status: 'success',
-      results: tours.length,
+      results: allTours.length,
       data: {
-        tours
+        allTours
       }
     });
   } catch (err) {
@@ -27,7 +28,7 @@ exports.getSingleTour = async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: {
-        tour
+        singleTour
       }
   });
   } catch (err) {
