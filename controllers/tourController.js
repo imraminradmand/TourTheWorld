@@ -8,7 +8,6 @@ exports.aliasTopTours = (req, res, next) => {
   req.query.fields = 'name,price,ratingsAverage,summary,difficulty'
   next()
 }
-
 // CRUD OPERATIONS
 exports.getAllTours = async (req, res) => {
 
@@ -101,6 +100,43 @@ exports.deleteTour = async (req, res) => {
     res.status(204).json({
       status: 'success',
       data: null
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'failed',
+      message: err
+    })
+  }
+}
+
+exports.getTourStats = async (req, res) => {
+  //aggregation pipeline
+  try {
+    const stats = await Tour.aggregate([
+      {
+        $match : { ratingsAverage: { $gte: 4.5}}
+      },
+      {
+        $group: {
+          _id: '$difficulty',
+          numberOfTours: { $sum: 1 },
+          avgRating: { $avg: '$ratingsAverage'},
+          numberOfRatings: { $sum: '$ratingsQuantity' },
+          avgPrice: { $avg: '$price' },
+          minPrice: { $min: '$price' },
+          maxPrice: { $max: '$price' }
+        },
+      },
+      {
+        $sort: {
+          avgPrice: 1 
+        }
+      },
+    ])
+
+    res.status(200).json({
+      status: 'success',
+      data: stats
     });
   } catch (err) {
     res.status(400).json({
