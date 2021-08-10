@@ -76,6 +76,7 @@ const tourSchema = new mongoose.Schema({
     toObject: { virtuals: true}
 })
 
+//cannot use this in query as its just a virtual property
 tourSchema.virtual('durationWeek').get(function() {
     return this.duration / 7
 })
