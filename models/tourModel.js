@@ -1,4 +1,5 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose")
+const slugify = require('slugify')
 
 const tourSchema = new mongoose.Schema({
     name: {
@@ -71,6 +72,8 @@ const tourSchema = new mongoose.Schema({
     startDates: {
         type: [Date]
     }, 
+
+    slug: String,
 }, {
     toJSON: { virtuals: true},
     toObject: { virtuals: true}
@@ -79,6 +82,12 @@ const tourSchema = new mongoose.Schema({
 //cannot use this in query as its just a virtual property
 tourSchema.virtual('durationWeek').get(function() {
     return this.duration / 7
+})
+
+//Document middleware, this will be called before doc is saved, only on insert single
+tourSchema.pre('save', function(next) {
+    this.slug = slugify(this.name, {lower: true})
+    next()
 })
 
 const Tour = mongoose.model('Tour', tourSchema)
