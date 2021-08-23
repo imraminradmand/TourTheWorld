@@ -102,6 +102,12 @@ tourSchema.pre(/^find/, function(next) {
     this.find({ secretTour: { $ne: true }})
     next()
 })
+
+//Aggregation middleware
+tourSchema.pre('aggregate', function(next) {
+    this.pipeline().unshift({ $match: { secretTour: { $ne: true }}})
+})
+
 const Tour = mongoose.model('Tour', tourSchema)
 
 module.exports = Tour
