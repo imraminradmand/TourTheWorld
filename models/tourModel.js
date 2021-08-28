@@ -95,8 +95,8 @@ const tourSchema = new mongoose.Schema({
         default: false
     }
 }, 
-    toJSON: { virtuals: true},
-    toObject: { virtuals: true}
+    //toJSON: { virtuals: true},
+    //toObject: { virtuals: true}
 })
 
 //cannot use this in query as its just a virtual property
