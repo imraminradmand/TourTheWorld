@@ -2,6 +2,7 @@ const mongoose = require("mongoose")
 const slugify = require('slugify')
 
 const tourSchema = new mongoose.Schema({
+
     name: {
         type: String,
         required: [true, 'A tour must have a name'],
@@ -25,8 +26,9 @@ const tourSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Tour must have a difficulty rating'],
         enum: {
-           values: ['easy', 'medium', 'difficult'],
-           message: 'please choose from easy, medium, or difficult'
+        values: ['easy', 'medium', 'difficult'],
+        message: 'please choose from easy, medium, or difficult'
+        }
     },
 
     ratingsAverage: {
@@ -94,10 +96,13 @@ const tourSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     }
-}, 
-    //toJSON: { virtuals: true},
-    //toObject: { virtuals: true}
-})
+    }, 
+    {
+        toJSON: { virtuals: true},
+        toObject: { virtuals: true}
+    }
+
+)
 
 //cannot use this in query as its just a virtual property
 tourSchema.virtual('durationWeek').get(function() {
