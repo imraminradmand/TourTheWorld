@@ -2,6 +2,7 @@ const express = require('express')
 const morgan = require('morgan')
 const tourRouter = require('./routes/tourRoutes')
 const userRouter = require('./routes/userRoutes')
+const AppError = require('./utilities/appError')
 const app = express()
 
 // MIDDLEWARE
@@ -16,15 +17,7 @@ app.use('/api/v1/users', tourRouter)
 
 //error handling for undefined routes
 app.all('*', (req, res, next) => {
-    // res.status(404).json({
-    //     status:'failed',
-    //     message: `${req.originalUrl} does not exsist`
-    // })
-    const err = new Error(`${req.originalUrl} does not exsist`)
-    err.status = 'fail'
-    err.statusCode = 404
-
-    next(err)
+    next(new AppError(`${req.originalUrl} does not exsist`, 404))
 })
 
 //error middleware
