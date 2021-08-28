@@ -14,5 +14,13 @@ app.use(express.json())
 app.use('/api/v1/tours', tourRouter)
 app.use('/api/v1/users', tourRouter)
 
+//error handling for undefined routes
+app.all('*', (req, res, next) => {
+    res.status(404).json({
+        status:'failed',
+        message: `${req.originalUrl} does not exsist`
+    })
+})
+
 module.exports = app
  
