@@ -1,5 +1,6 @@
 const Tour = require('../models/tourModel')
 const APIFeatures = require('../utilities/apiFeatures')
+const AppError = require('../utilities/appError')
 const catchAsyncAwait = require('../utilities/catchAsyncAwait')
 
 //Aliasing
@@ -33,6 +34,7 @@ exports.getAllTours = catchAsyncAwait(async (req, res, next) => {
 exports.getSingleTour = catchAsyncAwait(async (req, res, next) => {
   
   const singleTour = await Tour.findById(req.params.id)
+  console.log(singleTour)
   res.status(200).json({
     status: 'success',
     data: {
@@ -40,6 +42,7 @@ exports.getSingleTour = catchAsyncAwait(async (req, res, next) => {
     }
 });
 })
+
 
 exports.createTour = catchAsyncAwait(async (req, res, next) => {
 
