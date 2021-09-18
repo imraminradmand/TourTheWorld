@@ -8,10 +8,18 @@ const sendDevError = (err, res) => {
 }
 
 const sendProdError = (err, res) => {
+    if(err.isOperational) {
     res.status(err.statusCode).json({
         status: err.status,
         message: err.message,
     })
+} else {
+    console.log('you blew it up', err)
+    res.status(500).json({ //so we dont leak info to end user
+        status:'error',
+        message:'something went wrong'
+    })
+}
 }
 
 module.exports = (err, req, res, next) => {
