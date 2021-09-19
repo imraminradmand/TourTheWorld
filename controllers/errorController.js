@@ -1,3 +1,25 @@
+AppError = require('../utilities/appError')
+
+const dbCastError = err => {
+    const message = `Invalid ${err.path}: ${err.value}`
+    return new AppError(message, 400)
+}
+
+const dbDuplicateError = err => {
+    const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
+    console.log(value);
+  
+    const message = `Duplicate field value: ${value}. Please use another value!`;
+    return new AppError(message, 400);
+}
+
+const dbValidationError = err => {
+    const errors = Object.values(err.errors).map(el => el.message);
+
+    const message = `Invalid input data. ${errors.join('. ')}`;
+    return new AppError(message, 400);
+}
+
 const sendDevError = (err, res) => {
     res.status(err.statusCode).json({
         status: err.status,
@@ -29,6 +51,11 @@ module.exports = (err, req, res, next) => {
     if(process.env.NODE_ENV === "dev") {
         sendDevError(err, res)
     } else if(process.env.NODE_ENV == "prod") {
+        let error = { ...err }
+
+        if(error.name = 'CastError') error = dbCastError(error)
+        if(error.name = 11000) error = dbDuplicateError(error)
+        if(error.name = 'ValidationError') error = dbValidationError(error)
         sendProdError(err, res)
     }
     
