@@ -1,6 +1,6 @@
 const Tour = require('../models/tourModel')
 const APIFeatures = require('../utilities/apiFeatures')
-const AppError = require('../utilities/appError')
+AppError = require('../utilities/appError')
 const catchAsyncAwait = require('../utilities/catchAsyncAwait')
 
 //Aliasing
